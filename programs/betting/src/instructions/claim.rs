@@ -20,7 +20,9 @@ pub fn instruction_claim(ctx: Context<Claim>, _id: u64) -> Result<()> {
     let round_end_price = round.price_close;
     let round_start_price = round.price_open;
 
-    **bet.to_account_info().try_borrow_mut_lamports()? -= bet.amount;
+    **round.to_account_info().try_borrow_mut_lamports()? -= bet.amount;
+
+    // return back the same bet amount for now
 
     if bet.prediction_up && round_end_price > round_start_price {
         **ctx

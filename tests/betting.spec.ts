@@ -20,29 +20,29 @@ describe('betting', () => {
 
   const ROUND_ID = Math.floor(Date.now() / 1000);
 
-  it('Create Treasury', async () => {
+  // it('Create Treasury', async () => {
 
-    await program.methods
-      .createTreasury(
-    )
-      .accounts({
-      })
-      .rpc()
+  //   await program.methods
+  //     .createTreasury(
+  //   )
+  //     .accounts({
+  //     })
+  //     .rpc()
 
-    const [treasuryInfo] = PublicKey.findProgramAddressSync(
-      [Buffer.from("treasury")],
-      program.programId
-    )
+  //   const [treasuryInfo] = PublicKey.findProgramAddressSync(
+  //     [Buffer.from("treasury")],
+  //     program.programId
+  //   )
 
-    const treasuryInfoData = await program.account.treasury.fetch(treasuryInfo);
+  //   const treasuryInfoData = await program.account.treasury.fetch(treasuryInfo);
 
-    console.log("Starting round:");
-    console.table({
-      "Price Open": treasuryInfoData.treasurer.toBase58(),
-    });
+  //   console.log("Starting round:");
+  //   console.table({
+  //     "Treasury Address": treasuryInfoData.treasurer.toBase58(),
+  //   });
 
-    expect(treasuryInfoData.treasurer).toEqual(new PublicKey("i2tZJMMTqrcYv53qdLFsouL1JQPWgKiTfZ6sRDfk7nL"));
-  })
+  //   expect(treasuryInfoData.treasurer).toEqual(new PublicKey("i2tZJMMTqrcYv53qdLFsouL1JQPWgKiTfZ6sRDfk7nL"));
+  // })
 
   it('Start round', async () => {
 

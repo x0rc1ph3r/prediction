@@ -16,14 +16,14 @@ pub fn instruction_bet(
     // Deduct the bet amount from Player
     let transfer_instruction = system_instruction::transfer(
         &ctx.accounts.signer.key(), // Sender public key
-        &ctx.accounts.bet.key(),    // Bet account public key
+        &ctx.accounts.round.key(),    // round account public key
         amount,                     // Bet amount
     );
     anchor_lang::solana_program::program::invoke(
         &transfer_instruction,
         &[
             ctx.accounts.signer.to_account_info(),
-            ctx.accounts.bet.to_account_info(),
+            ctx.accounts.round.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
     )?;
