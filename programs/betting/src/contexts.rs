@@ -82,12 +82,21 @@ pub struct SetTreasury<'info> {
 #[derive(Accounts)]
 #[instruction(id: u64)]
 pub struct StartRound<'info> {
-    #[account(mut)]
-    pub treasurer: Signer<'info>,
+    #[account(
+        mut,
+        constraint = signer.key() == treasury.treasurer
+    )]
+    pub signer: Signer<'info>,
+
+    #[account(
+        seeds = [b"treasury".as_ref()],
+        bump,
+    )]
+    pub treasury: Account<'info, Treasury>,
 
     #[account(
         init,
-        payer = treasurer,
+        payer = signer,
         space = 8 + Round::INIT_SPACE,
         seeds = [b"round".as_ref(), id.to_le_bytes().as_ref()],
         bump
@@ -100,8 +109,17 @@ pub struct StartRound<'info> {
 #[derive(Accounts)]
 #[instruction(id: u64)]
 pub struct StopRound<'info> {
-    #[account(mut)]
-    pub treasurer: Signer<'info>,
+    #[account(
+        mut,
+        constraint = signer.key() == treasury.treasurer
+    )]
+    pub signer: Signer<'info>,
+
+    #[account(
+        seeds = [b"treasury".as_ref()],
+        bump,
+    )]
+    pub treasury: Account<'info, Treasury>,
 
     #[account(
         mut,
