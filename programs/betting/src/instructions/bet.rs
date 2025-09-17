@@ -13,27 +13,28 @@ pub fn instruction_bet(
         **ctx.accounts.signer.to_account_info().lamports.borrow() >= amount,
         CustomError::InsufficientFunds
     );
-    // Deduct the bet amount from Player
-    let transfer_instruction = system_instruction::transfer(
-        &ctx.accounts.signer.key(), // Sender public key
-        &ctx.accounts.round.key(),    // round account public key
-        amount,                     // Bet amount
+    // Deduct the bet amount from Player's account and transfer it to the Round account
+    let cpi_ctx = CpiContext::new(
+        ctx.accounts.system_program.to_account_info(),
+        anchor_lang::system_program::Transfer {
+            from: ctx.accounts.signer.to_account_info(),
+            to: ctx.accounts.round.to_account_info(),
+        },
     );
-    anchor_lang::solana_program::program::invoke(
-        &transfer_instruction,
-        &[
-            ctx.accounts.signer.to_account_info(),
-            ctx.accounts.round.to_account_info(),
-            ctx.accounts.system_program.to_account_info(),
-        ],
-    )?;
+    anchor_lang::system_program::transfer(cpi_ctx, amount)?;
 
     let round = &mut ctx.accounts.round;
 
     if prediction_up {
-        round.total_up = round.total_up.checked_add(amount).ok_or(CustomError::Overflow)?;
+        round.total_up = round
+            .total_up
+            .checked_add(amount)
+            .ok_or(CustomError::Overflow)?;
     } else {
-        round.total_down = round.total_down.checked_add(amount).ok_or(CustomError::Overflow)?;
+        round.total_down = round
+            .total_down
+            .checked_add(amount)
+            .ok_or(CustomError::Overflow)?;
     }
 
     let now = Clock::get()?.unix_timestamp;
